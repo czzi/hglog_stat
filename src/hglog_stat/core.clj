@@ -1,12 +1,10 @@
 (ns hglog-stat.core
-  (require [clojure.string :as str]))
+  (require [clojure.string :as str])
+  (require [clojure.pprint]))
 
 (defn read-log-file [filename]
   (with-open [rdr (clojure.java.io/reader filename)]
     (doall (line-seq rdr))))
-
-(defn conj-not-empty [to-list x]
-  (if (empty? x) to-list (conj to-list x)))
 
 (defn trim-empty-lines [lines]
   (let [trim-from-start
@@ -17,19 +15,6 @@
         trimmed-from-start (trim-from-start lines)
         trimmed-from-end (trim-from-start (reverse trimmed-from-start))]
     (reverse trimmed-from-end)))
-
-(defn group-by-commit-old [lines]
-  (loop [lines-tail lines
-         current-commit '()
-         result '()]
-    (let [current-line (first lines-tail)]
-      (cond
-       (nil? current-line)
-         (conj-not-empty result current-commit)
-       (str/blank? current-line)
-         (recur (rest lines-tail) '() (conj-not-empty result current-commit))
-       :else
-         (recur (rest lines-tail) (conj current-commit current-line) result)))))
 
 (defn group-by-commit [lines]
   (loop [lines-tail lines
@@ -52,18 +37,27 @@
                 current-mode
                 result)))))
 
-(defn split-commit-lines [commit-lines]
-  (map #(str/split % #":\s+" 2) commit-lines))
+(defn split-info-lines [info-lines]
+  "Split each line in the list from 'key: value' to ['key' 'value']"
+  (map #(str/split % #":\s+" 2) info-lines))
 
-(defn convert-commit-lines [splitted-lines]
-  (let [maps-with-keywords (map #(into {} (conj () (conj [] (keyword (nth % 0)) (nth % 1)))) splitted-lines)]
+(defn convert-info-lines [splitted-lines]
+  "Convert info list from (['key1' 'value1'] ['key2' 'value2'] to {:key1 'value1' :key2 'value2'})"
+  (let [maps-with-keywords
+        (map #(into {} (conj
+                        ()
+                        (conj [] (keyword (nth % 0)) (nth % 1))))
+             splitted-lines)]
     (into {} maps-with-keywords)))
 
 
 
 (defn -main [ & args]
-  (println
-    (doall
-     (map #(into {} %)
-      (map split-commit-lines
-        (group-by-commit (read-log-file "/home/roman/hglog.txt")))))))
+  (let [raw-lines (read-log-file "/home/roman/hglog2_short.txt")
+        lines-groupped-by-commit (group-by-commit raw-lines)]
+    (clojure.pprint/pprint lines-groupped-by-commit)))
+  ;(println
+   ; (doall
+    ; (map #(into {} %)
+     ; (map split-info-lines
+      ;  (group-by-commit (read-log-file "/home/roman/hglog2_short.txt")))))))

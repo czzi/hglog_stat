@@ -22,20 +22,20 @@
                              ""
                              "change3"))))))
 
-(deftest split-commit-lines-simple
+(deftest split-info-lines-simple
   (testing "Simple"
     (is (= '(["key1" "value1"] ["key2" "value2"])
-           (split-commit-lines '("key1: value1" "key2:  value2"))))))
+           (split-info-lines '("key1: value1" "key2:  value2"))))))
 
-(deftest split-commit-lines-split-only-by-first-separator
+(deftest split-info-lines-split-only-by-first-separator
   (testing "Split only by first separator"
     (is (= '(["key1" "the reason: some comment"] ["key2" "value2"])
-           (split-commit-lines '("key1: the reason: some comment" "key2:  value2"))))))
+           (split-info-lines '("key1: the reason: some comment" "key2:  value2"))))))
 
-(deftest convert-commit-lines-simple
+(deftest convert-info-lines-simple
   (testing "Simple"
     (is (= {:key1 "value1" :key2 "value2"}
-        (convert-commit-lines '(["key1" "value1"] ["key2" "value2"]))))))
+        (convert-info-lines '(["key1" "value1"] ["key2" "value2"]))))))
 
 ;(deftest convert-commit-to-map-simple
  ; (testing "Simple"
