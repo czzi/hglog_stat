@@ -2,16 +2,25 @@
   (:require [clojure.test :refer :all]
             [hglog-stat.core :refer :all]))
 
+(deftest trim-empty-lines-test
+  (testing "Empty lines are removed from the start and the end of the list"
+    (is (= '("1" "" "2" "3")
+           (trim-empty-lines '("" "" "1" "" "2" "3" "" "" ""))))))
+
 (deftest group-by-commit-simple-test
   (testing "Simple"
-    (is (= '(("5" "4") ("3") ("2" "1"))
-          (group-by-commit '("1" "2" "" "3" "" "4" "5"))))))
-
-
-(deftest group-by-commit-empty-commit
-  (testing "Empty commit is dropped"
-    (is (= '(("2" "1"))
-          (group-by-commit '("1" "2" "" ""))))))
+    (is (= '({:info ("branch: anotherBranch") :changes ("change3")}
+             {:info ("author: theAuthor" "branch: theBranch") :changes ("change2" "change1")})
+          (group-by-commit '(
+                             "branch: theBranch"
+                             "author: theAuthor"
+                             ""
+                             "change1"
+                             "change2"
+                             ""
+                             "branch: anotherBranch"
+                             ""
+                             "change3"))))))
 
 (deftest split-commit-lines-simple
   (testing "Simple"
@@ -22,6 +31,11 @@
   (testing "Split only by first separator"
     (is (= '(["key1" "the reason: some comment"] ["key2" "value2"])
            (split-commit-lines '("key1: the reason: some comment" "key2:  value2"))))))
+
+(deftest convert-commit-lines-simple
+  (testing "Simple"
+    (is (= {:key1 "value1" :key2 "value2"}
+        (convert-commit-lines '(["key1" "value1"] ["key2" "value2"]))))))
 
 ;(deftest convert-commit-to-map-simple
  ; (testing "Simple"
