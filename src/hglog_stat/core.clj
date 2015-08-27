@@ -18,7 +18,7 @@
 
 (defn group-by-commit [lines]
   (loop [lines-tail lines
-         current-commit {}
+         current-commit {:info [], :changes []}
          current-mode :info
          result '()]
     (let [current-line (first lines-tail)]
@@ -28,7 +28,7 @@
        (str/blank? current-line)
          (case current-mode
             :info (recur (rest lines-tail) current-commit :changes result)
-            :changes (recur (rest lines-tail) {} :info (conj result current-commit)))
+            :changes (recur (rest lines-tail) {:info [], :changes []} :info (conj result current-commit)))
        :else
          (recur (rest lines-tail)
                 (assoc current-commit
@@ -50,12 +50,18 @@
              splitted-lines)]
     (into {} maps-with-keywords)))
 
-
+(defn prepare-commits-info [raw-file]
+  (let [trimmed-file (trim-empty-lines raw-file)
+        lines-groupped-by-commit (group-by-commit trimmed-file)
+        commits-with-converted-info (map #(assoc % :info (convert-info-lines (split-info-lines (:info %)))) lines-groupped-by-commit)]
+    (reverse commits-with-converted-info)))
 
 (defn -main [ & args]
-  (let [raw-lines (read-log-file "/home/roman/hglog2_short.txt")
-        lines-groupped-by-commit (group-by-commit raw-lines)]
-    (clojure.pprint/pprint lines-groupped-by-commit)))
+  (let [raw-file (read-log-file "/home/roman/hglog2_short.txt")
+        trimmed-file (trim-empty-lines raw-file)
+        lines-groupped-by-commit (group-by-commit trimmed-file)
+        commits-with-converted-info (doall (map #(assoc % :info (convert-info-lines (split-info-lines (:info %)))) lines-groupped-by-commit))]
+    (clojure.pprint/pprint commits-with-converted-info)))
   ;(println
    ; (doall
     ; (map #(into {} %)

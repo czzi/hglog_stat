@@ -9,8 +9,8 @@
 
 (deftest group-by-commit-simple-test
   (testing "Simple"
-    (is (= '({:info ("branch: anotherBranch") :changes ("change3")}
-             {:info ("author: theAuthor" "branch: theBranch") :changes ("change2" "change1")})
+    (is (= '({:info ["branch: anotherBranch"] :changes ["change3"]}
+             {:info ["branch: theBranch" "author: theAuthor"] :changes ["change1" "change2"]})
           (group-by-commit '(
                              "branch: theBranch"
                              "author: theAuthor"
@@ -37,8 +37,21 @@
     (is (= {:key1 "value1" :key2 "value2"}
         (convert-info-lines '(["key1" "value1"] ["key2" "value2"]))))))
 
-;(deftest convert-commit-to-map-simple
- ; (testing "Simple"
-  ;  (is (= {"key1" "value1", "key2" "value2"}
-   ;        (convert-commit-to-map '("key1: value1" "key2:  value2"))))))
-;(run-tests)
+(deftest prepare-commits-info-simple
+  (testing "Simple"
+    (is (= '({:info {:branch "branch1", :author "author1"},
+              :changes ("changes1" "changes2")}
+             {:info {:branch "branch2"},
+              :changes ("changes3")})
+           (prepare-commits-info '(""
+                                   "branch: branch1"
+                                   "author: author1"
+                                   ""
+                                   "changes1"
+                                   "changes2"
+                                   ""
+                                   "branch: branch2"
+                                   ""
+                                   "changes3"))))))
+
+(run-tests)
