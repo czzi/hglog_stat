@@ -40,9 +40,9 @@
 (deftest prepare-commits-info-simple
   (testing "Simple"
     (is (= '({:info {:branch "branch1", :author "author1"},
-              :changes ("changes1" "changes2")}
+              :changes ["changes1" "changes2"]}
              {:info {:branch "branch2"},
-              :changes ("changes3")})
+              :changes ["changes3"]})
            (prepare-commits-info '(""
                                    "branch: branch1"
                                    "author: author1"
@@ -53,5 +53,10 @@
                                    "branch: branch2"
                                    ""
                                    "changes3"))))))
+
+(deftest get-changes-summary-simple
+  (testing "Simple"
+    (is (= {:affectedFiles 2, :insertions 4, :deletions 3}
+           (get-changes-summary {:changes ["line1" "line2" " 2 files changed, 4 insertions(+), 3 deletions(-)"]})))))
 
 (run-tests)

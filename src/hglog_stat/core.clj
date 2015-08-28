@@ -56,14 +56,12 @@
         commits-with-converted-info (map #(assoc % :info (convert-info-lines (split-info-lines (:info %)))) lines-groupped-by-commit)]
     (reverse commits-with-converted-info)))
 
+(defn get-changes-summary [commit]
+  (let [last-line (last (:changes commit))
+        matches (map read-string (rest (re-matches #"\s+(\d+) files changed, (\d+) insertions\(\+\), (\d+) deletions\(\-\)" last-line)))]
+    {:affectedFiles (nth matches 0), :insertions (nth matches 1), :deletions (nth matches 2)}))
+
 (defn -main [ & args]
-  (let [raw-file (read-log-file "/home/roman/hglog2_short.txt")
-        trimmed-file (trim-empty-lines raw-file)
-        lines-groupped-by-commit (group-by-commit trimmed-file)
-        commits-with-converted-info (doall (map #(assoc % :info (convert-info-lines (split-info-lines (:info %)))) lines-groupped-by-commit))]
-    (clojure.pprint/pprint commits-with-converted-info)))
-  ;(println
-   ; (doall
-    ; (map #(into {} %)
-     ; (map split-info-lines
-      ;  (group-by-commit (read-log-file "/home/roman/hglog2_short.txt")))))))
+  (let [raw-file (read-log-file "/home/roman/hglog2_short.txt")]
+    (clojure.pprint/pprint (prepare-commits-info raw-file))))
+
