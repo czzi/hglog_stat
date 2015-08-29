@@ -1,6 +1,6 @@
-(ns hglog-stat.core-test
+(ns hglog-stat.parse-test
   (:require [clojure.test :refer :all]
-            [hglog-stat.core :refer :all]))
+            [hglog-stat.parse :refer :all]))
 
 (deftest trim-empty-lines-test
   (testing "Empty lines are removed from the start and the end of the list"
@@ -65,4 +65,4 @@
     (is (= '({:changes ["line1" "line2" " 2 files changed, 4 insertions(+), 3 deletions(-)"], :summary {:affectedFiles 2, :insertions 4, :deletions 3}})
            (add-changes-summry-to-commits '({:changes ["line1" "line2" " 2 files changed, 4 insertions(+), 3 deletions(-)"]}))))))
 
-(run-tests)
+;(run-tests)
