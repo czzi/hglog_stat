@@ -61,7 +61,11 @@
         matches (map read-string (rest (re-matches #"\s+(\d+) files changed, (\d+) insertions\(\+\), (\d+) deletions\(\-\)" last-line)))]
     {:affectedFiles (nth matches 0), :insertions (nth matches 1), :deletions (nth matches 2)}))
 
+(defn add-changes-summry-to-commits [commits]
+  (map #(assoc % :summary (get-changes-summary %)) commits))
+
 (defn -main [ & args]
-  (let [raw-file (read-log-file "/home/roman/hglog2_short.txt")]
-    (clojure.pprint/pprint (prepare-commits-info raw-file))))
+  (let [raw-file (read-log-file "/home/roman/hglog2_short.txt")
+        prepared-commits (prepare-commits-info raw-file)]
+    (clojure.pprint/pprint (add-changes-summry-to-commits prepared-commits))))
 

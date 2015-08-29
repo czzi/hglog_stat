@@ -59,4 +59,10 @@
     (is (= {:affectedFiles 2, :insertions 4, :deletions 3}
            (get-changes-summary {:changes ["line1" "line2" " 2 files changed, 4 insertions(+), 3 deletions(-)"]})))))
 
+
+(deftest add-changes-summry-to-commits-simple
+  (testing "Simple"
+    (is (= '({:changes ["line1" "line2" " 2 files changed, 4 insertions(+), 3 deletions(-)"], :summary {:affectedFiles 2, :insertions 4, :deletions 3}})
+           (add-changes-summry-to-commits '({:changes ["line1" "line2" " 2 files changed, 4 insertions(+), 3 deletions(-)"]}))))))
+
 (run-tests)
