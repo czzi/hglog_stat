@@ -57,8 +57,13 @@
 
 (defn get-changes-summary [commit]
   (let [last-line (last (:changes commit))
-        matches (map read-string (rest (re-matches #"\s+(\d+) files changed, (\d+) insertions\(\+\), (\d+) deletions\(\-\)" last-line)))]
-    {:affectedFiles (nth matches 0), :insertions (nth matches 1), :deletions (nth matches 2)}))
+        matches (map read-string (rest (re-matches #"\s+(\d+) files changed, (\d+) insertions\(\+\), (\d+) deletions\(\-\)" last-line)))
+        affected-files (nth matches 0)
+        insertions (nth matches 1)
+        deletions (nth matches 2)
+        affected-lines (+ insertions deletions)
+        lines-difference (- insertions deletions)]
+    {:affected-files affected-files, :insertions insertions, :deletions deletions, :affected-lines affected-lines, :lines-difference lines-difference}))
 
-(defn add-changes-summry-to-commits [commits]
+(defn add-changes-summary-to-commits [commits]
   (map #(assoc % :summary (get-changes-summary %)) commits))

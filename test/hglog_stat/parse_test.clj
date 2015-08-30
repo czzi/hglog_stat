@@ -56,13 +56,13 @@
 
 (deftest get-changes-summary-simple
   (testing "Simple"
-    (is (= {:affectedFiles 2, :insertions 4, :deletions 3}
+    (is (= {:affected-files 2, :insertions 4, :deletions 3 :affected-lines 7 :lines-difference 1}
            (get-changes-summary {:changes ["line1" "line2" " 2 files changed, 4 insertions(+), 3 deletions(-)"]})))))
 
 
-(deftest add-changes-summry-to-commits-simple
+(deftest add-changes-summary-to-commits-simple
   (testing "Simple"
-    (is (= '({:changes ["line1" "line2" " 2 files changed, 4 insertions(+), 3 deletions(-)"], :summary {:affectedFiles 2, :insertions 4, :deletions 3}})
-           (add-changes-summry-to-commits '({:changes ["line1" "line2" " 2 files changed, 4 insertions(+), 3 deletions(-)"]}))))))
+    (is (= '({:changes ["line1" "line2" " 2 files changed, 4 insertions(+), 3 deletions(-)"], :summary {:affected-files 2, :insertions 4, :deletions 3 :affected-lines 7 :lines-difference 1}})
+           (add-changes-summary-to-commits '({:changes ["line1" "line2" " 2 files changed, 4 insertions(+), 3 deletions(-)"]}))))))
 
 ;(run-tests)
