@@ -13,7 +13,7 @@
 (defroutes app-routes
   (GET "/" [] (let [data (analyze-file  "/home/roman/hglog2.txt")
                     groups (group-by-info-fields data '(:branch))
-                    sorted-groups (sort-by #(:lines-difference (:info %)) groups)]
+                    sorted-groups (sort-by #(:lines-difference (:summary %)) groups)]
                 (generate-string sorted-groups {:pretty true})))
   (route/not-found "Not Found"))
 
