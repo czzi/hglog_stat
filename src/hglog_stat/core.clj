@@ -13,8 +13,14 @@
                                  {:info info :summary aggregated-summary}))]
     (map convert-partition-fn groups)))
 
+(defn analyze-file [file]
+  (let [raw-file (read-log-file file)
+        prepared-commits (prepare-commits-info raw-file)
+        summaries (add-changes-summary-to-commits prepared-commits)]
+    summaries))
+
 (defn -main [ & args]
-  (let [raw-file (read-log-file "/home/roman/hglog2_short.txt")
-        prepared-commits (prepare-commits-info raw-file)]
-    (clojure.pprint/pprint (add-changes-summary-to-commits prepared-commits))))
+  (let [data (analyze-file  "/home/roman/hglog2.txt")
+        grouping (group-by-info-fields data '(:branch))]
+    (clojure.pprint/pprint grouping)))
 

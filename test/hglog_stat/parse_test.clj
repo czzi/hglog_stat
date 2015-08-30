@@ -59,6 +59,10 @@
     (is (= {:affected-files 2, :insertions 4, :deletions 3 :affected-lines 7 :lines-difference 1}
            (get-changes-summary {:changes ["line1" "line2" " 2 files changed, 4 insertions(+), 3 deletions(-)"]})))))
 
+(deftest get-changes-summary-empty-commit
+  (testing "A summary is empty for an empty commit"
+    (is (= {}
+           (get-changes-summary {:changes []})))))
 
 (deftest add-changes-summary-to-commits-simple
   (testing "Simple"
