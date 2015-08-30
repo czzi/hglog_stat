@@ -4,4 +4,5 @@
             :url "http://www.eclipse.org/legal/epl-v10.html"}
   :dependencies [[org.clojure/clojure "1.7.0"]]
   :profiles {:dev {:plugins [[com.jakemccrary/lein-test-refresh "0.10.0"]]}}
-  :main hglog-stat.core)
+  ;:main hglog-stat.core
+  )

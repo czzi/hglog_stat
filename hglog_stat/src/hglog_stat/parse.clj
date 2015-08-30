@@ -23,18 +23,18 @@
     (let [current-line (first lines-tail)]
       (cond
        (nil? current-line)
-         (conj result current-commit)
+       (conj result current-commit)
        (str/blank? current-line)
-         (case current-mode
-            :info (recur (rest lines-tail) current-commit :changes result)
-            :changes (recur (rest lines-tail) {:info [], :changes []} :info (conj result current-commit)))
+       (case current-mode
+         :info (recur (rest lines-tail) current-commit :changes result)
+         :changes (recur (rest lines-tail) {:info [], :changes []} :info (conj result current-commit)))
        :else
-         (recur (rest lines-tail)
-                (assoc current-commit
-                  current-mode
-                  (conj (current-mode current-commit) current-line))
+       (recur (rest lines-tail)
+              (assoc current-commit
                 current-mode
-                result)))))
+                (conj (current-mode current-commit) current-line))
+              current-mode
+              result)))))
 
 (defn split-info-lines [info-lines]
   "Split each line in the list from 'key: value' to ['key' 'value']"
@@ -59,8 +59,7 @@
   (let [last-line (last (:changes commit))]
     (if (nil? last-line)
       {}
-      (let[
-           matches (map read-string (rest (re-matches #"\s+(\d+) files changed, (\d+) insertions\(\+\), (\d+) deletions\(\-\)" last-line)))
+      (let[matches (map read-string (rest (re-matches #"\s+(\d+) files changed, (\d+) insertions\(\+\), (\d+) deletions\(\-\)" last-line)))
            affected-files (nth matches 0)
            insertions (nth matches 1)
            deletions (nth matches 2)

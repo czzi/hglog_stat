@@ -19,8 +19,8 @@
         summaries (add-changes-summary-to-commits prepared-commits)]
     summaries))
 
-(defn -main [ & args]
-  (let [data (analyze-file  "/home/roman/hglog2.txt")
-        grouping (group-by-info-fields data '(:branch))]
-    (clojure.pprint/pprint grouping)))
+;(defn -main [ & args]
+;  (let [data (analyze-file  "/home/roman/hglog2.txt")
+;        grouping (group-by-info-fields data '(:branch))]
+;    (clojure.pprint/pprint grouping)))
 
